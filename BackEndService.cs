@@ -45,9 +45,8 @@ namespace WakamProductReservationTool
 
             List<Reservation> reservations = new List<Reservation>();
             for (int i = cursor; i < cursor + limit; i++)
-            {
                 reservations.Add(data.ElementAt(i));
-            }
+
             return (reservations);
         }
 
@@ -73,11 +72,11 @@ namespace WakamProductReservationTool
                 Console.WriteLine("Error: Cursor cannot index the data");
                 return null;
             }
+
             List<Product> products = new List<Product>();
             for (int i = cursor; i < cursor + limit; i++)
-            {
                 products.Add(data.ElementAt(i));
-            }
+
             return(products);
         }
         
@@ -94,7 +93,10 @@ namespace WakamProductReservationTool
 
             while (result.Read())
             {
-                products.Add(new Product(result["id"].ToString(), result["name"].ToString(), int.Parse(result["quantity"].ToString())));
+                products.Add(new Product(result["id"].ToString(),
+                    result["name"].ToString(),
+                    int.Parse(result["quantity"].ToString()))
+                    );
             }
 
             databaseObject.CloseConnection();
@@ -128,7 +130,12 @@ namespace WakamProductReservationTool
             List<Reservation> reservations = new List<Reservation>();
             while (result.Read())
             {
-                reservations.Add(new Reservation(result["id"].ToString(), GetOrderLine(result["id"].ToString()), /*DateTime.ParseExact(result["CreatedAt"].ToString()*/new DateTime(), returnBool(int.Parse(result["IsAvailable"].ToString()))));
+                reservations.Add(new Reservation(
+                    result["id"].ToString(),
+                    GetOrderLine(result["id"].ToString()),
+                    new DateTime(),
+                    returnBool(int.Parse(result["IsAvailable"].ToString())))
+                    );
             }
             databaseObject.CloseConnection();
             return reservations.AsQueryable();
@@ -146,7 +153,11 @@ namespace WakamProductReservationTool
 
             while (result.Read())
             {
-                orderLine.Add(new OrderLine(result["id"].ToString(), result["ReservationId"].ToString(), result["ProductId"].ToString(), int.Parse(result["Quantity"].ToString())));
+                orderLine.Add(new OrderLine(result["id"].ToString(),
+                    result["ReservationId"].ToString(),
+                    result["ProductId"].ToString(),
+                    int.Parse(result["Quantity"].ToString()))
+                    );
             }
             databaseObject.CloseConnection();
             
@@ -192,7 +203,7 @@ namespace WakamProductReservationTool
             List<Product> productsOutOfStock = new List<Product>();
 
             foreach (Product product in GetProducts(0,0))
-                if (product.Quantity < 0)
+                if (product.Quantity <= 0)
                     productsOutOfStock.Add(product);
 
             foreach (OrderLine item in order)

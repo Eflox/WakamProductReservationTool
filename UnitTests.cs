@@ -14,6 +14,7 @@ namespace WakamProductReservationTool
             CannotOrderUnknownProduct_2Products1Unknown_Return1();
             GetReservations_Cursor1Limit3_Return3AtIndex1();
             CannotCreateEmptyReservation_Product0_returnFalse();
+            ReservationAvailability_ProductQuantity10_returnTrue();
             ReservationAvailability_ProductQuantity0_returnFalse();
             GetProducts_Cursor1Limit3_Return3AtIndex1();
             GetProductsInvalidCurspr_Cursor1000Limit5_ReturnNull();
@@ -185,6 +186,25 @@ namespace WakamProductReservationTool
 
             //Assert
             if (testReservation == null)
+                PassOrFail(true);
+            else
+                PassOrFail(false);
+        }
+
+        void ReservationAvailability_ProductQuantity10_returnTrue()
+        {
+            Console.WriteLine("TEST: ReservationAvailability_ProductQuantity10_returnTrue\n");
+
+            //Arrange
+            BackEndService backEndService = new BackEndService();
+
+            //Act
+            backEndService.SetProduct("5", 1);      //Available Product 
+            Reservation testReservation = backEndService.CreateReservation(backEndService.MainOrder);
+
+            //Assert
+            PrintReservation(testReservation);
+            if (testReservation.IsAvailable == true)
                 PassOrFail(true);
             else
                 PassOrFail(false);
